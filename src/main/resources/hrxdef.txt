@@ -1,0 +1,26 @@
+ * Hrx structure:
+ *
+ * 4b MN
+ *
+ * --- CIPHER I with passw + warlock age.
+ *
+ * 1b fcrypt hash length 0..255b fcrypt hash (validation bytes)
+ *
+ * --- CIPHER II encrypted with passwd generated key from fcrypt.
+ *
+ * 1b Name Length
+ *
+ * 0..255b Name
+ *
+ * 4b Secrets Length
+ *
+ * 0..2^32 - 1 Secrets (1b skey length, 2b ssecr length, 0..255 key, 0..2^16 - 1
+ * secr)
+ *
+ * --- CIPHER II encrypted with passwd generated key from fcrypt.
+ *
+ * 32b Checksum
+ *
+ * --- CIPHER I
+ *
+ * ---
