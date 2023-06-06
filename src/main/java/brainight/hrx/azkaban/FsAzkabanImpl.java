@@ -11,10 +11,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Github: https://github.com/Brainight
@@ -25,12 +23,14 @@ public class FsAzkabanImpl implements AzkabanImpl<Path, MirroredHorrocrux> {
 
     protected HorrocruxProvider<Path, ByteBuffer> provider;
     protected Warlock<ByteBuffer, Path> warlock;
-    protected Map<MirroredHorrocrux, Horrocrux> horrocruxes;
+    protected IdentityHashMap<MirroredHorrocrux, Horrocrux> horrocruxes;
+    protected List<MirroredHorrocrux> views;
 
     public FsAzkabanImpl() {
         this.provider = new FsHorrocruxProvider();
         this.warlock = new HorrocruxWarlock();
         this.horrocruxes = new IdentityHashMap<>();
+        this.views = new LinkedList<>();
     }
 
     @Override
@@ -46,11 +46,11 @@ public class FsAzkabanImpl implements AzkabanImpl<Path, MirroredHorrocrux> {
             hrx = this.warlock.summon(id, bb, key);
             mhrx = this.warlock.mirror(hrx);
             this.horrocruxes.put(mhrx, hrx);
+            this.views.add(mhrx);
             return mhrx;
         } catch (IOException ex) {
             throw new HorrocruxException(ex);
         }
-
     }
 
     @Override
@@ -75,8 +75,8 @@ public class FsAzkabanImpl implements AzkabanImpl<Path, MirroredHorrocrux> {
     }
 
     @Override
-    public Set<MirroredHorrocrux> getHorroruxes() {
-        return this.horrocruxes.keySet();
+    public List<MirroredHorrocrux> getHorroruxes() {
+        return List.copyOf(this.views);
     }
 
     @Override
@@ -90,23 +90,28 @@ public class FsAzkabanImpl implements AzkabanImpl<Path, MirroredHorrocrux> {
         this.provider.create(id);
         MirroredHorrocrux mhrx = this.warlock.register(hrx, id, key);
         this.horrocruxes.put(mhrx, hrx);
+        this.views.add(mhrx);
         return mhrx;
     }
 
     @Override
     public void delete(MirroredHorrocrux mhrx) throws HorrocruxException {
         Horrocrux hrx = this.horrocruxes.remove(mhrx);
+        this.views.remove(mhrx);
         if (hrx == null) {
             throw new HorrocruxException("Delete error. Provided mirrored Horrocrux doesn't belong to an existing Horrocrux");
         }
 
         Path p = this.warlock.removeHrxId(hrx);
+
         this.provider.delete(p);
     }
 
     @Override
     public void close(MirroredHorrocrux mhrx) throws HorrocruxException {
         Horrocrux hrx = this.horrocruxes.remove(mhrx);
+        this.views.remove(mhrx);
+        
         if (hrx == null) {
             throw new HorrocruxException("Close error. Provided mirrored Horrocrux doesn't belong to an existing Horrocrux");
         }

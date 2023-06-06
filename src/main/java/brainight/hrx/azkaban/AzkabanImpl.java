@@ -5,7 +5,7 @@
 package brainight.hrx.azkaban;
 
 import brainight.hrx.core.exceptions.HorrocruxException;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Github: https://github.com/Brainight
@@ -26,6 +26,6 @@ public interface AzkabanImpl<T, O> {
 
     void close(O hrx) throws HorrocruxException;
 
-    Set<O> getHorroruxes();
+    List<O> getHorroruxes();
 
 }
