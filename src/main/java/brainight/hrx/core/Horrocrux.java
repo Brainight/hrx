@@ -49,7 +49,7 @@ public class Horrocrux {
         this.secrets.remove(name);
     }
 
-    Map<String, byte[]> getSecrets() {
+    protected Map<String, byte[]> getSecrets() {
         return this.secrets;
     }
 
