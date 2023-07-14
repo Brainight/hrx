@@ -16,20 +16,20 @@ public class Horrocrux {
     private String name;
     private Map<String, byte[]> secrets;
 
-    public Horrocrux() {
+    protected Horrocrux() {
         this.secrets = new HashMap<>();
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
-    public void setName(String name) throws HorrocruxException {
+    protected void setName(String name) throws HorrocruxException {
         validateName(name);
         this.name = name;
     }
 
-    public void addSecret(String name, byte[] secret) throws HorrocruxException {
+    protected void addSecret(String name, byte[] secret) throws HorrocruxException {
         if (this.secrets.containsKey(name)) {
             throw new HorrocruxException("A secret with name '" + name + "' already exists.");
         }
@@ -39,13 +39,13 @@ public class Horrocrux {
         this.secrets.put(name, secret);
     }
 
-    public void updateSecret(String name, byte[] secret) throws HorrocruxException {
+    protected void updateSecret(String name, byte[] secret) throws HorrocruxException {
         validateName(name);
         validateSecret(secret);
         this.secrets.compute(name, (k, v) -> secret);
     }
 
-    public void removeSecret(String name) {
+    protected void removeSecret(String name) {
         this.secrets.remove(name);
     }
 

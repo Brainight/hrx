@@ -1,4 +1,4 @@
-package brainight.hrx.azkaban;
+package brainight.hrx.core;
 
 import brainight.hrx.core.Horrocrux;
 import brainight.hrx.core.HorrocruxWarlock;
@@ -117,6 +117,15 @@ public class FsAzkabanImpl implements AzkabanImpl<Path, MirroredHorrocrux> {
         }
         Path p = this.warlock.removeHrxId(hrx);
         this.provider.close(p);
+    }
+
+    @Override
+    public Path getHorrocruxId(MirroredHorrocrux mhrx) {
+        Horrocrux hrx = this.horrocruxes.get(mhrx);
+        if(hrx == null){
+            return null;
+        }
+        return this.warlock.getHrxId(hrx);
     }
 
 }

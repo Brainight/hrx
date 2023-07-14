@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package brainight.hrx.azkaban;
+package brainight.hrx.core;
 
 import brainight.hrx.core.exceptions.HorrocruxException;
 import java.util.List;
@@ -27,5 +27,7 @@ public interface AzkabanImpl<T, O> {
     void close(O hrx) throws HorrocruxException;
 
     List<O> getHorroruxes();
+    
+    T getHorrocruxId(O hrx);
 
 }
